@@ -1,25 +1,72 @@
 # Plan for ASM-Project 02
 
+```
+Da calendar
+-----------
+
+** : Gặp mỗi ngày (online/offline) :v
+09 : Debug chéo, lần 1
+12 : Debug chéo, lần 2
+13 : Kết thúc giai đoạn 1
+16 : Debug chéo, lần 3
+19 : Debug chéo, lần 4
+20 : Kết thúc giai đoạn 2 (DỰ TÍNH)
+28 : DEADLINE THỰC
+```
+
+```
+Da note
+-------
+
+QuickSort.asm:
+- Tương tác: Không
+- Input cố định: input_sort.txt
+  <n trong khoảng [2, 1000]>
+  <phần tử 1> <phần tử 2> ...
+- Output cố định: output_sort.txt
+  <phần tử 1> <phần tử 2> ...
+
+Báo cáo: Kèm test cases
+
+Đóng gói:
+[18127221_18127231.zip]
+|
+|   18127221_18127231.pdf
+|
+|   Array.asm
++---Array_macros
+|       <các file macro>
+|
+|   QuickSort.asm
+\---QuickSort_macros
+        <các file macro>
+```
 
 
-## Giai  đoạn 1 : Khung đồ án
 
-- Thời gian: Đến hết ngày 13/12/2019
-- Mục tiêu: **Hoàn thành Interface**
-  - Input/output.
-  - Cài đặt hoàn tất menu có loop.
-  - Quicksort độc lập.
-- Mỗi thứ 4 sẽ team up meeting 1 lần và mỗi thứ 7 sẽ là buổi debug chéo :>
+## Giai đoạn 1
 
-## Giai đoạn 2: Hoàn thiện đồ án
+-   [ ] **`Array.asm`**
+    -   [ ] Input
+    -   [ ] List (all)
+    -   [ ] Menu (có loop và thoát được .-.)
+-   [ ] **`QuickSort.asm`**
+    -   [ ] QuickSort độc lập
 
-- Thời gian: Đến đoạn này cũng là đoạn đang ôn thi nên thời gian sẽ chốt đến trước ngày 20 mình ship đồ án đi luôn.
-- Mục tiêu: **Hoàn thành phần còn laị của đồ án và fix bug**.
-  - Đối với task 01:
-    - Hàm xuất.
-    - Hàm sum.
-    - Hàm check nguyên tố - liệt kê nguyên tố.
-    - Hàm max.
-    - Hàm Search (Linear or Binary but vote Binary).
-    - Hàm thoát (Hơi nhàm nhưng mà cần, có thể gud bite trước khi thoát).
-- Giai đoạn này thời gian không cố định, cố gắng xong để ôm đồ án khác.
+
+
+## Giai đoạn 2
+
+
+- [ ] **`Array.asm`**
+- [ ] Sum
+    - [ ] Max
+    - [ ] isPrime
+    - [ ] List (prime only)
+    - [ ] Search
+    
+        - [ ] Linear Search (fallback)
+    - [ ] Binary Search
+- [ ] **`QuickSort.asm`**
+- [ ] File I/O
+
