@@ -1,6 +1,7 @@
 # Main program
 
-.include    "../Commons/syscall.asm"
+.include    "Array_parts.asm"
+.include    "../syscall.asm"
 
             .data
 mstr1:      .asciiz "Enter a choice, or press Cancel/close this dialog to exit.\n1 = Valid choice\n2 = Still a valid choice"
