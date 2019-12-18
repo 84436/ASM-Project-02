@@ -8,11 +8,15 @@
 input_array:    move $s0, $sp
                 sub $s0, $s0, 4
                 GetArraySize
-                GetArray
-                
-menu:           PrintChar (LF)
                 PrintChar (LF)
+                GetArray
+
+menu:           PrintChar (LF)
                 PrintString (str_menu)
+                
+menu_prompt:    PrintChar (LF)
+                PrintChar (LF)
+                PrintString (str_menu_prompt)
                 GetInt
                 beq $v0, 0, exit
                 beq $v0, 1, f1
@@ -23,23 +27,21 @@ menu:           PrintChar (LF)
                 j invalid
                 
 invalid:        PrintString (str_menu_invalid)
-                j menu
+                j menu_prompt
                 
 f1:             List
-                j menu
+                j menu_prompt
                 
 f2:             Sum
-                j menu
+                j menu_prompt
                 
 f3:             ListPrime
-                j menu
+                j menu_prompt
                 
 f4:             Max
-                j menu
+                j menu_prompt
                 
 f5:             Search
-                j menu
+                j menu_prompt
                 
-exit:           PrintString (str_exit)
-                li $v0, EXIT
-                syscall
+exit:           EndProgram
