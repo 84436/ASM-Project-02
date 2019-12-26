@@ -151,7 +151,8 @@ output_sort.txt
 # Lời cảm ơn
 Để hoàn thiện được đồ án này, không thể nhắc tới sự hướng dẫn từ những thầy cô ở HCMUS. Gửi lời cảm ơn chân thành đến:
 
--   Thầy **Lê Quốc Hòa**, giảng viên phụ trách bộ môn Kiến Trúc Máy Tính và Hợp Ngữ
+-   Thầy **Lê Quốc Hòa**, giảng viên phụ trách bộ môn Kiến Trúc Máy Tính và Hợp Ngữ và là người trực tiếp hướng dẫn đồ án
+-   Cô **Chung Thùy Linh**, giảng viên hướng dẫn thực hành.
 
 Một lời cảm ơn nữa đến những người đồng đội đã cùng nhau thực hiện và hoàn thiện đồ án này cho tới thời điểm cuối cùng.
 
