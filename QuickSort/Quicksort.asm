@@ -10,9 +10,9 @@ move $s7,$v1
 main: 						# Prepare data for Quicksort
 li $a1, 0 					# a1 = 0
 subi $a2,$v1,1 				# $a2 = n - 1
-mul $t2,$a2,4
-add $t1,$sp,$t2 			#t1 = &a[0]
-la $a0,($t1) 				#a0 = &a[0]
+#mul $t2,$a2,4
+#add $t1,$sp,$t2 			#t1 = &a[0]
+la $a0,($sp) 				#a0 = &a[0]
 
 #Reset reg
 li $t1, 0
@@ -72,26 +72,26 @@ partition:					# Takes 3 args: $a0: Array, $a1: Low index, $a2: High Index
 addi $sp, $sp, -8 			# Create space for two words
 sw $ra, 4($sp) 				# save return address
 
-mul $t2, $a2, -4			# Calculates offset of the High Index
+mul $t2, $a2, 4				# Calculates offset of the High Index
 add $t3, $a0, $t2 			# $t3 High address	# Calculates the address of the Pivot
 lw $t4, 0($t3)				# Loads the value thats stored in the address List[High Index] int $t4 Pivot
 
 addi $t5, $a1, -1			# Get index of the smaller element i 
-mul $t2, $t5, -4			# Calulates i offset
+mul $t2, $t5, 4				# Calulates i offset
 add $t7, $a0, $t2 			# $t7 I address	# Calculates the address of the ith element
 
 add $t0, $a1, $zero			# Initialize loop counter j
 for_loop:
 bge $t0, $a2, exit_loop		# Loop condition: Branch if inex is greater than the high Index
 
-mul $t2, $t0, -4			# Calulates loop counter offset
+mul $t2, $t0, 4				# Calulates loop counter offset
 add $t6, $a0, $t2 			#$t6 J address		# Calculates the address of the jth element
 lw $t8, 0($t6)				# Loads value stored in the jth element
 
-bgt $t8, $t4, end_loop_cond			# Branch if List[j] >= Pivot
+bgt $t8, $t4, end_loop_cond	# Branch if List[j] >= Pivot
 
 addi $t5, $t5, 1			# increment i
-addi $t7, $t7, -4			# increment i
+addi $t7, $t7, 4			# increment i
 
 lw $t9, 0($t7)				# temp = List[i]
 sw $t8, 0($t7)				# List[i] = List[j]
@@ -103,9 +103,9 @@ j for_loop
 
 exit_loop:
 
-lw $t9, -4($t7)				# temp = arr[i+1];
-sw $t4, -4($t7)				# arr[i+1] = arr[high];
-sw $t9, 0($t3)				# arr[high] = temp;
+lw $t9, 4($t7)				# temp = arr[i+1];
+sw $t4, 4($t7)				# arr[i+1] = arr[high];
+sw $t9, 4($t3)				# arr[high] = temp;
 
 addi $v0, $t5, 1			# Load return value
 
