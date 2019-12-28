@@ -142,7 +142,7 @@ output_sort.txt
 1 6 11 13 18 25 29 39 41 43 
 ```
 
-
+Ngoài ra nhóm có viết thêm một đoạn script test gen bằng C++ để hỗ trợ tìm bug.
 
 ---
 
