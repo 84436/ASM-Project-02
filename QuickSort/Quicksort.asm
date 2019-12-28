@@ -1,5 +1,4 @@
 .include "Unity.asm"
-
 Title()
 open_file("./input_sort.txt",0)
 move $s0,$v0 				# Move file descriptor to $s0
@@ -7,12 +6,10 @@ loadfile($s0) 				# Load da file, $v1 store n of element, $sp store arr[n-1]
 move $s7,$v1
 
 			
-main: 						# Prepare data for Quicksort
+main: 						# Load init data - $a1 low , $a2 high, $a0 array (a)
 li $a1, 0 					# a1 = 0
 subi $a2,$v1,1 				# $a2 = n - 1
-#mul $t2,$a2,4
-#add $t1,$sp,$t2 			#t1 = &a[0]
-la $a0,($sp) 				#a0 = &a[0]
+la $a0,($sp) 				# $a0 = &a[0]
 
 #Reset reg
 li $t1, 0
@@ -31,88 +28,104 @@ jal quick_sort
 
 j write_to_file
 	
-quick_sort:					# Takes 3 args: $a0: Array, $a1: Low index, $a2: High Index			
+restore:
+	addi $sp, $sp, -12 		# init stack size = 3
+	sw	$t1, 0($sp)			# $t1: pivot
+	sw 	$t2, 4($sp)			# $t2: lo
+	sw	$t3, 8($sp)			# $t3: hi
+	
+	mul	$t0, $a1, 4			# offset i
+	add	$t0, $a0, $t0		# &arr[i]
+	lw	$t1, 0($t0)			# arr[i]
 
-addi $sp, $sp, -12 			# Create space on the stack for 3 words
-sw $ra, 4($sp) 				# save return address
-sw $a1, 0($sp) 				# save arg 1
-sw $a2, 8($sp)				# save arg 2
+	mul	$t2, $a2, 4			# offset j
+	add	$t2, $a0, $t2		# &arr[j]
+	lw	$t3, 0($t2)			# arr[j]
+	
+	sw 	$t1, 0($t2)			# swap 2 pos
+	sw	$t3, 0($t0)
+	lw 	$t1, 0($sp)			# restore 
+	lw	$t2, 4($sp)			# restore
+	lw	$t3, 8($sp)			# restore
+	addi $sp, $sp, 12		# pop stack
+	
+	
+	jr 	$ra				
 
-blt $a1, $a2, continue_sort	# Branches if the low index is bigger than the high
+partition:
+	addi $sp, $sp, -12
+	
+	sw	$a1, 0($sp)			# $a1 lo
+	sw	$a2, 4($sp)			# $a2 hi
+	sw	$ra, 8($sp)			# return address
 
-j end_sort					# Terminate current sort process
-
-continue_sort:
-
-jal partition				# Jump to partition process. Args are the same as current quick_sort args
-
-add $t1, $v0, $zero			# Store temp variable to hold partition return value
-
-add $t2, $a2, $zero			# Store $a2 value in a temp to preserve through recursive call
-
-addi $a2, $t1, -1			# Change the high index arg to value returned by partition - 1
-
-jal quick_sort
-
-add $a2, $t2, $zero			# Restore $a2 value after recursive call	
-addi $a1, $t1, 1			# Change the High index arg to value returned by partition + 1
-
-jal quick_sort
-
-end_sort:
-lw $ra 4($sp)				# Load previous return address
-lw $a1, 0($sp)				# Load previous arg 1
-lw $a2, 8($sp)				# Load previous arg 2
+	mul $t0, $a2, 4		# calculate hi offset
+	add	$t0, $a0, $t0		# &arr[hi]
+	lw	$t1, 0($t0)			# arr[hi]
+	
+	addi	$t2, $a1, -1	# i = lo - 1
+	move 	$t3, $a1		# j = lo
+	addi	$t4, $a2, 0		# n = hi
+	for_loop:
+		beq	$t3, $t4, next_step	# index out range - branch to nextstep
 		
-addi $sp, $sp, 12			# Remove current stack frame from the stack
-jr $ra						# Jump to return address
+		mul $t0, $t3, 4		# Calculate arr[j] offset
+		add	$t0, $a0, $t0	# &arr[j]
+		lw	$t5, 0($t0)		# arr[j]
 
-partition:					# Takes 3 args: $a0: Array, $a1: Low index, $a2: High Index
+		bge	$t5, $t1, end_loop_cond	# if array[j] < pivot
 
-addi $sp, $sp, -8 			# Create space for two words
-sw $ra, 4($sp) 				# save return address
+		addi $t2, $t2, 1			# increase i 
 
-mul $t2, $a2, 4				# Calculates offset of the High Index
-add $t3, $a0, $t2 			# $t3 High address	# Calculates the address of the Pivot
-lw $t4, 0($t3)				# Loads the value thats stored in the address List[High Index] int $t4 Pivot
+		move $a1, $t2		# store value for loop
+		move $a2, $t3		# store value for loop
+		jal restore	
+										
+		end_loop_cond:
+			addi $t3, $t3, 1	# increase j
+			j for_loop
 
-addi $t5, $a1, -1			# Get index of the smaller element i 
-mul $t2, $t5, 4				# Calulates i offset
-add $t7, $a0, $t2 			# $t7 I address	# Calculates the address of the ith element
+	next_step:
+		lw	$a1, 0($sp)		# $a1 lo
+		lw	$a2, 4($sp)		# $a2 hi
+		addi $a1, $t2, 1	# increase lo upto 1
+		jal restore
 
-add $t0, $a1, $zero			# Initialize loop counter j
-for_loop:
-bge $t0, $a2, exit_loop		# Loop condition: Branch if inex is greater than the high Index
+		move $v0,$a1        # return pivot
+		
+		lw	$ra, 8($sp)		# load return address
+		addi $sp, $sp, 12	# pop stack
 
-mul $t2, $t0, 4				# Calulates loop counter offset
-add $t6, $a0, $t2 			#$t6 J address		# Calculates the address of the jth element
-lw $t8, 0($t6)				# Loads value stored in the jth element
+		jr	$ra
 
-bgt $t8, $t4, end_loop_cond	# Branch if List[j] >= Pivot
+quick_sort:
+	addi $sp, $sp, -16 # Init stack for array, hi, lo and $ra
+	sw $a0, 0($sp)			# $a0 arr
+	sw $a1, 4($sp)			# $a1 lo
+	sw $a2, 8($sp)			# $a2 hi
+	sw $ra, 12($sp)			# save return address
+	
+	bgt	$a1, $a2, end_of_partition	# branches if the low index is bigger than the high
+	
+	jal 	partition
+	move 	$s3, $v0			# get pivot return
+	
+	lw	$a1, 4($sp)			# $a1 lo
+	addi 	$a2, $s3, -1	# $a2 hi, aka pivot descrease 1
+	jal 	quick_sort
+	
+	addi	$a1, $s3, 1		# $a1 lo, aka pivot increase 1
+	lw	$a2, 8($sp)			# $a2 hi
+	jal 	quick_sort
 
-addi $t5, $t5, 1			# increment i
-addi $t7, $t7, 4			# increment i
+end_of_partition: 	
+	lw	$a0, 0($sp)			# $a0 arr
+	lw	$a1, 4($sp)			# $a1 lo
+	lw	$a2, 8($sp)			# $a2 hi
+	lw	$ra, 12($sp)		# load return address
 
-lw $t9, 0($t7)				# temp = List[i]
-sw $t8, 0($t7)				# List[i] = List[j]
-sw $t9, 0($t6)				# List[j] = temp
-end_loop_cond:
-
-addi $t0, $t0, 1			# Increment i
-j for_loop
-
-exit_loop:
-
-lw $t9, 4($t7)				# temp = arr[i+1];
-sw $t4, 4($t7)				# arr[i+1] = arr[high];
-sw $t9, 4($t3)				# arr[high] = temp;
-
-addi $v0, $t5, 1			# Load return value
-
-end_of_partition:
-lw $ra, 4($sp)				# Restore previous return address
-addi $sp, $sp, 8			# Remove current stack frame from the stack
-jr $ra						# Jump to return address
+	addi $sp, $sp, 16	# pop stack
+	jr	$ra					# return to quicksort
 
 
 write_to_file:

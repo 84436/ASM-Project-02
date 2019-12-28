@@ -145,7 +145,6 @@ first_push:
 	print_str("So luong phan tu: ")
 	print_int($t1)
 	spush($t1)
-	spush($t1)
 	spop($t4)
 	li $t1,0
 	addi $t3,$t3,1
